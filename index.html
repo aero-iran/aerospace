@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پورتال جامع ارشد مهندسی هوافضا (آپدیت ۱۴۰۵-۱۴۰۶)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f172a; --secondary: #1e40af; --accent: #3b82f6;
+            --bg: #f1f5f9; --card: #ffffff; --text: #1e293b;
+            --success: #10b981; --warning: #f59e0b; --danger: #ef4444;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Vazirmatn', Tahoma, sans-serif; }
+        body { background-color: var(--bg); color: var(--text); line-height: 1.6; padding: 15px 10px; }
+        .container { max-width: 980px; margin: 0 auto; background: var(--card); border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); overflow: hidden; }
+        .header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 22px 20px; text-align: center; }
+        .header h1 { font-size: 1.35rem; font-weight: 800; margin-bottom: 5px; }
+        .header p { font-size: 0.85rem; opacity: 0.9; }
+        
+        .tabs { display: flex; background: #e2e8f0; padding: 6px; gap: 6px; flex-wrap: wrap; }
+        .tab-btn { flex: 1; min-width: 140px; padding: 12px 10px; border: none; border-radius: 10px; background: transparent; color: #475569; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: 0.2s; }
+        .tab-btn.active { background: white; color: var(--secondary); box-shadow: 0 2px 6px rgba(0,0,0,0.08); font-weight: 800; }
+        .tab-content { display: none; padding: 20px; animation: fadeIn 0.3s ease; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        .major-select { margin-bottom: 20px; background: #eff6ff; padding: 15px; border-radius: 12px; border: 1px solid #bfdbfe; }
+        .major-select label { display: block; font-weight: 600; margin-bottom: 8px; color: var(--secondary); font-size: 0.9rem; }
+        select, input[type="number"], input[type="text"] { width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 0.9rem; background: white; outline: none; }
+        input[type="number"]:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 20px; }
+        .filter-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin-bottom: 18px; background: #f8fafc; padding: 14px; border-radius: 12px; border: 1px solid #e2e8f0; }
+        .input-group { display: flex; flex-direction: column; }
+        .input-group label { font-size: 0.82rem; font-weight: 600; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center; }
+        .ltr-num { direction: ltr; text-align: left; }
+        .coef-badge { background: #e2e8f0; color: #475569; padding: 2px 8px; border-radius: 12px; font-size: 0.72rem; }
+        .coef-badge.highlight { background: #dbeafe; color: var(--secondary); font-weight: 800; }
+
+        .btn-group { display: flex; gap: 10px; }
+        .btn-calc { flex: 1; padding: 13px; border: none; border-radius: 10px; font-size: 0.95rem; font-weight: 600; cursor: pointer; background: linear-gradient(135deg, var(--accent), var(--secondary)); color: white; }
+        .btn-reset { padding: 13px 20px; border: none; border-radius: 10px; font-size: 0.95rem; font-weight: 600; cursor: pointer; background: #e2e8f0; color: #475569; }
+
+        .result-box { display: none; margin-top: 20px; padding: 18px; border-radius: 12px; background: #f8fafc; border: 2px solid #e2e8f0; }
+        .stats-row { display: flex; justify-content: space-around; text-align: center; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px dashed #cbd5e1; }
+        .stat-item span { display: block; font-size: 0.8rem; color: #64748b; }
+        .stat-item strong { font-size: 1.5rem; color: var(--secondary); font-weight: 800; }
+        .uni-list { list-style: none; }
+        .uni-list li { background: white; padding: 11px 14px; border-radius: 8px; margin-bottom: 8px; border-right: 4px solid var(--success); font-size: 0.88rem; box-shadow: 0 1px 3px rgba(0,0,0,0.04); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; }
+        .uni-list li.borderline { border-right-color: var(--warning); }
+        .cap-tag { background: #f1f5f9; color: #475569; font-size: 0.75rem; padding: 2px 8px; border-radius: 6px; border: 1px solid #cbd5e1; }
+
+        .count-bar { font-size: 0.85rem; color: #475569; margin-bottom: 10px; font-weight: 600; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 5px; }
+        .table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid #e2e8f0; max-height: 550px; overflow-y: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.84rem; text-align: center; white-space: nowrap; }
+        th { background: var(--primary); color: white; padding: 11px 8px; position: sticky; top: 0; z-index: 2; font-weight: 600; }
+        td { padding: 9px 8px; border-bottom: 1px solid #e2e8f0; }
+        tr:nth-child(even) { background-color: #f8fafc; }
+        tr:hover { background-color: #eff6ff; }
+        .neg { color: var(--danger); font-weight: 600; direction: ltr; display: inline-block; }
+        .high { color: #059669; font-weight: 700; }
+        .blank-cell { color: #94a3b8; font-size: 0.78rem; }
+        .badge { padding: 3px 8px; border-radius: 6px; font-size: 0.76rem; font-weight: 600; display: inline-block; }
+        .b-day { background: #d1fae5; color: #065f46; }
+        .b-night { background: #dbeafe; color: #1e40af; }
+        .b-other { background: #fef3c7; color: #92400e; }
+        .rank-pill { background: var(--secondary); color: white; padding: 2px 9px; border-radius: 20px; font-weight: 700; font-size: 0.82rem; }
+        .footer-note { text-align: center; font-size: 0.75rem; color: #64748b; padding: 14px; background: #f8fafc; border-top: 1px solid #e2e8f0; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>✈️ سامانه جامع کنکور ارشد مهندسی هوافضا</h1>
+        <p>تخمین رتبه ۱۴۰۶ منطبق با ظرفیت‌های دفترچه ۱۴۰۵ + ۲۶۵ کارنامه درصدی + ۲۰۰ قبولی واقعی</p>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('est', this)">🎯 تخمین رتبه ۱۴۰۶</button>
+        <button class="tab-btn" onclick="switchTab('sc', this)">📊 کارنامه‌های درصدی (رتبه)</button>
+        <button class="tab-btn" onclick="switchTab('adm', this)">🎓 قبولی دانشگاه و رشته</button>
+    </div>
+
+    <!-- TAB 1: RANK ESTIMATOR -->
+    <div id="tab-est" class="tab-content active">
+        <div class="major-select">
+            <label for="targetMajor">۱. گرایش هدف خود را انتخاب کنید (اعمال ضریب ۳ نظام جدید ۱۴۰۶):</label>
+            <select id="targetMajor" onchange="updateCoefs()">
+                <option value="flight">دینامیک پرواز و کنترل (ضریب ۳ برای پرواز ۲)</option>
+                <option value="aero">آیرودینامیک (ضریب ۳ برای آیرودینامیک ۱)</option>
+                <option value="propulsion">جلوبرندگی / پیشرانش (ضریب ۳ برای پیشرانش)</option>
+                <option value="structures">سازه‌های هوایی (ضریب ۳ برای تحلیل سازه)</option>
+                <option value="space">مهندسی فضایی و ماهواره (ضریب ۳ برای مکانیک مدار)</option>
+            </select>
+        </div>
+
+        <label style="display:block; font-weight:600; margin-bottom:10px; font-size:0.9rem;">۲. درصدهای خود را وارد کنید (خالی = ۰٪):</label>
+        <div class="grid">
+            <div class="input-group"><label>زبان عمومی و تخصصی <span class="coef-badge">ضریب ۱</span></label><input type="number" class="ltr-num" id="lang" placeholder="0" min="-33.33" max="100" step="0.1"></div>
+            <div class="input-group"><label>ریاضیات (معادلات و مهندسی) <span class="coef-badge">ضریب ۱</span></label><input type="number" class="ltr-num" id="math" placeholder="0" min="-33.33" max="100" step="0.1"></div>
+            <div class="input-group"><label>طراحی اجسام پرنده <span class="coef-badge" id="badge-design">ضریب ۲</span></label><input type="number" class="ltr-num" id="design" placeholder="0" min="-33.33" max="100" step="0.1"></div>
+            <div class="input-group"><label>آیرودینامیک ۱ <span class="coef-badge" id="badge-aero">ضریب ۲</span></label><input type="number" class="ltr-num" id="aero" placeholder="0" min="-33.33" max="100" step="0.1"></div>
+            <div class="input-group"><label>اصول جلوبرندگی (پیشرانش) <span class="coef-badge" id="badge-propulsion">ضریب ۲</span></label><input type="number" class="ltr-num" id="propulsion" placeholder="0" min="-33.33" max="100" step="0.1"></div>
+            <div class="input-group"><label>تحلیل سازه <span class="coef-badge" id="badge-structures">ضریب ۲</span></label><input type="number" class="ltr-num" id="structures" placeholder="0" min="-33.33" max="100" step="0.1"></div>
+            <div class="input-group"><label>دینامیک پرواز ۲ (پایداری) <span class="coef-badge highlight" id="badge-flight">ضریب ۳</span></label><input type="number" class="ltr-num" id="flight" placeholder="0" min="-33.33" max="100" step="0.1"></div>
+            <div class="input-group"><label>مکانیک مدارهای فضایی <span class="coef-badge" id="badge-space">ضریب ۲</span></label><input type="number" class="ltr-num" id="space" placeholder="0" min="-33.33" max="100" step="0.1"></div>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn-calc" onclick="calculate()">محاسبه رتبه و شانس قبولی</button>
+            <button class="btn-reset" onclick="resetForm()">پاک کردن</button>
+        </div>
+
+        <div class="result-box" id="resultBox">
+            <div class="stats-row">
+                <div class="stat-item"><span>میانگین وزنی کل</span><strong id="resAvg">0%</strong></div>
+                <div class="stat-item"><span>رتبه تخمینی در گرایش</span><strong id="resRank">0</strong></div>
+            </div>
+            <div class="uni-predictions">
+                <h3 style="font-size:0.95rem; margin-bottom:10px;">🎯 شانس قبولی دانشگاه و گرایش (بر اساس ظرفیت رسمی دفترچه ۱۴۰۵):</h3>
+                <ul class="uni-list" id="uniList"></ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: SCORECARDS BY RANK -->
+    <div id="tab-sc" class="tab-content">
+        <div class="filter-grid">
+            <div class="input-group">
+                <label>سال کنکور:</label>
+                <select id="scYear" onchange="renderScorecards()">
+                    <option value="all">همه سال‌ها (۹۴ تا ۱۴۰۴)</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>حداقل رتبه:</label>
+                <input type="number" class="ltr-num" id="scMinR" placeholder="مثلا: 1" oninput="renderScorecards()">
+            </div>
+            <div class="input-group">
+                <label>حداکثر رتبه:</label>
+                <input type="number" class="ltr-num" id="scMaxR" placeholder="مثلا: 500" oninput="renderScorecards()">
+            </div>
+            <div class="input-group">
+                <label>مرتب‌سازی:</label>
+                <select id="scSort" onchange="renderScorecards()">
+                    <option value="year_desc">جدیدترین سال + رتبه</option>
+                    <option value="rank_asc">بهترین رتبه (صعودی)</option>
+                </select>
+            </div>
+        </div>
+        <div class="count-bar"><span id="scCount">در حال بارگذاری...</span><span style="font-size:0.75rem; color:#64748b;">(میانگین وزنی با ضرایب قدیم ۱-۲-۲-۲-۲-۲ محاسبه شده)</span></div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>سال</th><th>رتبه</th><th>میانگین وزنی</th><th>زبان</th><th>ریاضی</th><th>آیرو</th><th>پرواز</th><th>سازه</th><th>طراحی</th>
+                    </tr>
+                </thead>
+                <tbody id="scBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- TAB 3: ADMISSIONS BY UNIVERSITY & MAJOR -->
+    <div id="tab-adm" class="tab-content">
+        <div class="filter-grid">
+            <div class="input-group">
+                <label>دانشگاه:</label>
+                <select id="admUni" onchange="renderAdmissions()"><option value="all">همه دانشگاه‌ها</option></select>
+            </div>
+            <div class="input-group">
+                <label>گرایش:</label>
+                <select id="admMajor" onchange="renderAdmissions()"><option value="all">همه گرایش‌ها</option></select>
+            </div>
+            <div class="input-group">
+                <label>دوره:</label>
+                <select id="admType" onchange="renderAdmissions()"><option value="all">همه دوره‌ها</option></select>
+            </div>
+            <div class="input-group">
+                <label>سال:</label>
+                <select id="admYear" onchange="renderAdmissions()"><option value="all">همه سال‌ها</option></select>
+            </div>
+            <div class="input-group">
+                <label>از رتبه:</label>
+                <input type="number" class="ltr-num" id="admMinR" placeholder="1" oninput="renderAdmissions()">
+            </div>
+            <div class="input-group">
+                <label>تا رتبه:</label>
+                <input type="number" class="ltr-num" id="admMaxR" placeholder="1000" oninput="renderAdmissions()">
+            </div>
+        </div>
+        <div class="count-bar"><span id="admCount">در حال بارگذاری...</span></div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>رتبه</th><th>گرایش</th><th>دانشگاه</th><th>دوره</th><th>سال</th><th>توضیحات</th>
+                    </tr>
+                </thead>
+                <tbody id="admBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="footer-note">
+        دیتابیس جامع ارشد هوافضا | مجهز به ظرفیت‌های رسمی دفترچه ۱۴۰۵ و آمار قبولی ۹۴ تا ۱۴۰۴
+    </div>
+</div>
+
+<script>
+// ==================== TAB SWITCHING ====================
+function switchTab(id, btn) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    btn.classList.add('active');
+}
+
+// ==================== TAB 1: ESTIMATOR (1405 BOOKLET CAPACITIES) ====================
+function updateCoefs() {
+    const major = document.getElementById('targetMajor').value;
+    ['design', 'aero', 'propulsion', 'structures', 'flight', 'space'].forEach(sub => {
+        const badge = document.getElementById(`badge-${sub}`);
+        if (sub === major) { badge.innerText = 'ضریب ۳'; badge.classList.add('highlight'); }
+        else { badge.innerText = 'ضریب ۲'; badge.classList.remove('highlight'); }
+    });
+}
+function getVal(id) {
+    const val = parseFloat(document.getElementById(id).value);
+    if (isNaN(val)) return 0;
+    return Math.min(100, Math.max(-33.33, val));
+}
+function estimateRank(avg) {
+    const baselines = [[42,1],[36,6],[30,15],[24,30],[20,50],[16,85],[13.5,120],[11,175],[8.5,245],[6.5,325],[5.5,360],[4,440],[2.5,550],[0,850],[-5,1300]];
+    if (avg >= baselines[0][0]) return 1;
+    if (avg <= baselines[baselines.length - 1][0]) return "بالای ۱۳۰۰";
+    for (let i = 0; i < baselines.length - 1; i++) {
+        const [hs, hr] = baselines[i], [ls, lr] = baselines[i + 1];
+        if (avg >= ls && avg <= hs) return Math.round(hr + ((hs - avg) / (hs - ls)) * (lr - hr));
+    }
+    return 500;
+}
+
+// کاتالوگ دقیق قبولی‌ها بر اساس دفترچه ۱۴۰۵: [حداکثر رتبه قطعی, حداکثر رتبه مرزی, دانشگاه, گرایش, دوره, ظرفیت۱۴۰۵]
+const catalog1405 = {
+    flight: [
+        [35, 50, "صنعتی شریف", "دینامیک پرواز و کنترل", "روزانه", 12],
+        [45, 70, "صنعتی امیرکبیر", "دینامیک پرواز و کنترل", "روزانه", 7],
+        [95, 130, "دانشگاه تهران", "دینامیک پرواز و کنترل", "روزانه", 4],
+        [120, 165, "خواجه نصیرالدین طوسی", "دینامیک پرواز و کنترل", "روزانه", 10],
+        [200, 260, "شهید بهشتی", "دینامیک پرواز و کنترل", "روزانه", 6],
+        [240, 320, "خواجه نصیرالدین طوسی", "دینامیک پرواز و کنترل", "نوبت دوم (شبانه)", 6],
+        [280, 340, "دانشگاه اصفهان", "دینامیک پرواز و کنترل", "روزانه", 5],
+        [290, 370, "دانشگاه شیراز", "دینامیک پرواز و کنترل", "روزانه", 10],
+        [330, 420, "شهید بهشتی", "دینامیک پرواز و کنترل", "نوبت دوم (شبانه)", 2],
+        [360, 480, "دانشگاه اصفهان", "دینامیک پرواز و کنترل", "نوبت دوم (شبانه)", 3],
+        [280, 550, "مالک اشتر (تهران و شاهین‌شهر)", "دینامیک پرواز و کنترل", "روزانه (با مصاحبه)", 10],
+        [400, 850, "تهران (کیش/البرز) و امیرکبیر و شیراز", "دینامیک پرواز و کنترل", "پردیس خودگردان", 13],
+        [500, 1000, "مالک اشتر (تهران و شاهین‌شهر)", "دینامیک پرواز و کنترل", "نوبت دوم (با مصاحبه)", 10]
+    ],
+    aero: [
+        [45, 65, "صنعتی شریف", "آیرودینامیک", "روزانه", 11],
+        [75, 105, "صنعتی امیرکبیر", "آیرودینامیک", "روزانه", 6],
+        [120, 160, "دانشگاه تهران", "آیرودینامیک", "روزانه", 4],
+        [170, 215, "تربیت مدرس", "آیرودینامیک", "روزانه", 5],
+        [200, 255, "خواجه نصیرالدین طوسی", "آیرودینامیک", "روزانه", 9],
+        [230, 290, "علم و صنعت", "آیرودینامیک", "روزانه", 3],
+        [280, 355, "خواجه نصیرالدین طوسی", "آیرودینامیک", "نوبت دوم (شبانه)", 6],
+        [300, 385, "فردوسی مشهد", "آیرودینامیک", "روزانه", 7],
+        [360, 470, "دانشگاه شیراز", "آیرودینامیک", "روزانه", 6],
+        [430, 620, "صنعتی شاهرود و حکیم سبزواری", "آیرودینامیک", "روزانه", 14],
+        [420, 650, "مالک اشتر (تهران و شاهین‌شهر)", "آیرودینامیک", "روزانه (با مصاحبه)", 10],
+        [500, 900, "تهران (کیش/البرز)، امیرکبیر، مدرس و شیراز", "آیرودینامیک", "پردیس خودگردان", 14],
+        [550, 1050, "صنعتی شاهرود و مالک اشتر", "آیرودینامیک", "نوبت دوم (شبانه)", 12]
+    ],
+    propulsion: [
+        [40, 55, "صنعتی شریف", "جلوبرندگی (پیشرانش)", "روزانه", 12],
+        [80, 105, "صنعتی امیرکبیر", "جلوبرندگی (پیشرانش)", "روزانه", 7],
+        [105, 135, "دانشگاه تهران", "جلوبرندگی (پیشرانش)", "روزانه", 4],
+        [135, 175, "علم و صنعت", "جلوبرندگی (پیشرانش)", "روزانه", 4],
+        [145, 195, "خواجه نصیرالدین طوسی", "جلوبرندگی (پیشرانش)", "روزانه", 9],
+        [185, 235, "شهید بهشتی", "جلوبرندگی (پیشرانش)", "روزانه", 6],
+        [240, 310, "فردوسی مشهد", "جلوبرندگی (پیشرانش)", "روزانه", 5],
+        [250, 340, "خواجه نصیرالدین طوسی", "جلوبرندگی (پیشرانش)", "نوبت دوم (شبانه)", 6],
+        [280, 380, "شهید بهشتی و علم و صنعت", "جلوبرندگی (پیشرانش)", "نوبت دوم (شبانه)", 3],
+        [380, 600, "دانشگاه سمنان", "جلوبرندگی (پیشرانش)", "روزانه", 5],
+        [350, 650, "مالک اشتر (تهران و شاهین‌شهر)", "جلوبرندگی (پیشرانش)", "روزانه (با مصاحبه)", 12],
+        [500, 950, "تهران (کیش/البرز)، امیرکبیر و بهشتی", "جلوبرندگی (پیشرانش)", "پردیس خودگردان", 11]
+    ],
+    structures: [
+        [55, 75, "صنعتی شریف", "سازه‌های هوایی", "روزانه", 12],
+        [110, 145, "صنعتی امیرکبیر", "سازه‌های هوایی", "روزانه", 5],
+        [125, 165, "دانشگاه تهران", "سازه‌های هوایی", "روزانه", 7],
+        [170, 230, "خواجه نصیرالدین طوسی", "سازه‌های هوایی", "روزانه", 8],
+        [210, 275, "تربیت مدرس و علم و صنعت", "سازه‌های هوایی", "روزانه", 9],
+        [280, 345, "شهید بهشتی", "سازه‌های هوایی", "روزانه", 12],
+        [310, 410, "خواجه نصیر، شهید بهشتی و علم و صنعت", "سازه‌های هوایی", "نوبت دوم (شبانه)", 8],
+        [360, 480, "فردوسی مشهد", "سازه‌های هوایی", "روزانه", 5],
+        [410, 580, "دانشگاه تبریز و سهند تبریز", "سازه‌های هوایی", "روزانه", 10],
+        [480, 720, "صنعتی شاهرود و دانشگاه سمنان", "سازه‌های هوایی", "روزانه", 11],
+        [600, 1150, "پردیس‌های تهران/تبریز/مدرس و غیرانتفاعی احرار رشت", "سازه‌های هوایی", "پردیس / غیرانتفاعی", 33]
+    ],
+    space: [
+        [65, 90, "صنعتی شریف", "مهندسی فضایی", "روزانه", 8],
+        [105, 135, "صنعتی امیرکبیر", "مهندسی فضایی", "روزانه", 5],
+        [135, 180, "دانشگاه تهران", "مهندسی فضایی و فناوری ماهواره", "روزانه", 5],
+        [170, 225, "خواجه نصیرالدین طوسی", "مهندسی فضایی", "روزانه", 9],
+        [280, 355, "خواجه نصیرالدین طوسی", "مهندسی فضایی", "نوبت دوم (شبانه)", 5],
+        [340, 430, "پژوهشگاه هوافضا تهران", "مهندسی فضایی", "روزانه", 7],
+        [420, 650, "مالک اشتر تهران", "مهندسی فضایی", "روزانه (با مصاحبه)", 6],
+        [500, 900, "دانشگاه تهران (کیش و البرز)", "مهندسی فضایی و ماهواره", "پردیس خودگردان", 10],
+        [550, 1050, "مالک اشتر تهران", "مهندسی فضایی", "نوبت دوم (با مصاحبه)", 6]
+    ]
+};
+
+function getUniversityPredictions(rank, major) {
+    if (typeof rank === 'string') {
+        return [`<li><span><strong>احتمالی:</strong> دانشگاه آزاد و غیرانتفاعی (مثل سازه احرار رشت، ظرفیت: ۷ نفر)</span><span class="cap-tag">آزاد / غیرانتفاعی</span></li>`];
+    }
+
+    const items = catalog1405[major];
+    const matches = items.filter(it => rank <= it[1]);
+    
+    if (matches.length === 0) {
+        return [`<li class="borderline"><span><strong>خارج از ظرفیت دولتی این گرایش:</strong> بررسی دانشگاه آزاد، پردیس‌های کم‌تقاضا یا غیرانتفاعی</span><span class="cap-tag">ظرفیت آزاد</span></li>`];
+    }
+
+    // نمایش حداکثر ۷ گزینه واقع‌بینانه‌ی اول برای جلوگیری از شلوغی
+    return matches.slice(0, 7).map(it => {
+        const [safeR, borderR, uni, majName, type, cap] = it;
+        const isSafe = rank <= safeR;
+        const status = isSafe ? "شانس بالا / قطعی" : "مرزی / نیازمند شانس";
+        const cls = isSafe ? "" : "borderline";
+        return `
+            <li class="${cls}">
+                <span><strong>${status}:</strong> ${uni} — گرایش <strong>${majName}</strong> (${type})</span>
+                <span class="cap-tag">ظرفیت ۱۴۰۵: ${cap} نفر</span>
+            </li>
+        `;
+    });
+}
+
+function calculate() {
+    const major = document.getElementById('targetMajor').value;
+    const weightedSum = getVal('lang') + getVal('math') + (getVal('design')*2) +
+        (getVal('aero')*(major==='aero'?3:2)) + (getVal('propulsion')*(major==='propulsion'?3:2)) +
+        (getVal('structures')*(major==='structures'?3:2)) + (getVal('flight')*(major==='flight'?3:2)) +
+        (getVal('space')*(major==='space'?3:2));
+    const avg = weightedSum / 15;
+    const rank = estimateRank(avg);
+    document.getElementById('resAvg').innerText = avg.toFixed(2) + '%';
+    document.getElementById('resRank').innerText = typeof rank === 'number' ? `حدود ${rank}` : rank;
+    document.getElementById('uniList').innerHTML = getUniversityPredictions(rank, major).join('');
+    document.getElementById('resultBox').style.display = 'block';
+}
+function resetForm() {
+    document.querySelectorAll('#tab-est input').forEach(i => i.value = '');
+    document.getElementById('resultBox').style.display = 'none';
+}
+
+// ==================== TAB 2: SCORECARDS DATA (11 YEARS) ====================
+const scData = {
+    "1404-1405": [[6,63.44,56.32,45.63,18.45,49.44,13.36],[7,48.25,72.25,19.74,47.38,26.99,16.49],[8,11.12,66.35,46,2.36,42.25,23.56],[25,0,31,49.36,4.1,3.94,39.3],[27,56.08,23.79,0,36.9,14.52,26.22],[36,51.62,51.67,6.43,15.33,17.09,0],[44,12.92,3.66,13.23,9.23,45.82,31],[64,15.25,17.29,40.72,5.54,-3.36,28.24],[90,19.21,23.2,0,21.49,0,28.22],[123,2.75,13.78,19.29,11.37,12.43,12.09],[247,22.06,6.89,0,5.48,12.4,8.06],[264,15.25,0,15.43,4.1,8.73,6.05],[278,41.35,0,-1.28,13.29,0,6.05],[293,58.8,5.45,3.33,0,-1.81,0],[297,30.32,0,2.81,3.06,5.32,10.08],[321,35.84,0,0,4.1,5.32,6.05],[339,13.88,0,12.91,5.48,0,6.05],[502,4.13,0,0,12.32,0,2.01],[515,0,3.44,3.86,1.36,2.63,4.03],[543,9.65,5.17,0,0,2.63,0],[557,4.13,0,0,0,0,10.08],[572,22.06,0,0,0,0,0]],
+    "1403-1404": [[12,0,75.36,50,0,52.38,21.61],[17,50.35,23.7,27.01,20.06,45.36,42.54],[35,38.29,15.18,21.45,51.5,24.77,15.13],[44,44.51,21.82,14.4,40.11,13.32,24.06],[81,40.97,47.41,6.99,16.66,15.68,-1.2],[85,10.25,3.36,14.38,10.03,42.04,28.44],[107,0,15.86,44.26,6.02,0,25.91],[120,-3.36,28.44,15.37,4.46,3.62,36.06],[168,2.19,12.64,20.97,12.36,11.41,11.09],[299,12.11,0,16.77,4.46,8.01,5.55],[305,17.51,6.32,0,5.95,11.37,7.4],[336,32.82,0,-1.39,14.45,0,5.55],[353,24.06,0,3.05,3.33,4.88,9.25],[364,11.02,0,14.03,5.95,0,5.55],[377,46.67,5,0,0,-1.66,0],[378,28.44,0,0,4.46,4.88,5.55],[483,3.28,0,0,13.39,0,1.85],[502,0,3.16,4.19,1.48,2.41,3.7],[544,7.66,4.74,0,0,2.41,0],[545,3.28,0,0,0,0,9.25],[569,17.51,0,0,0,0,0]],
+    "1402-1403": [[6,50,81.21,35.26,0,56.32,20.2],[8,36.47,22.79,29.36,18.4,25.56,39.75],[10,35.45,11.25,23.32,47.25,26.63,14.14],[14,0,15.25,60.32,5.52,19.45,24.21],[19,41.21,20.99,15.65,36.8,-2.25,22.48],[30,0,3.23,15.63,9.2,45.2,26.58],[43,37.93,45.58,7.59,0,16.86,-1.12],[46,0,27.35,16.71,4.09,3.89,33.7],[93,2.02,12.15,22.79,4.09,12.26,10.37],[114,14.12,20.47,0,4.09,0,24.2],[174,11.21,0,18.23,4.09,8.61,5.19],[190,16.21,6.08,0,5.46,12.23,6.91],[240,10.2,0,15.25,5.46,0,5.19],[259,22.28,0,3.32,0,5.25,8.64],[264,26.34,0,0,4.09,5.25,5.19],[344,30.38,0,-1.51,0,0,5.19],[381,3.04,0,0,12.28,0,1.73],[387,0,3.04,4.56,1.36,2.59,3.45],[440,7.09,4.56,0,0,2.59,0],[447,3.04,0,0,0,0,8.64],[475,16.21,0,0,0,0,0]],
+    "1401-1402": [[6,33.03,69.36,47.89,15.23,45.23,19.98],[8,38.54,14.86,26.43,14.83,26.65,54.48],[20,5.66,23.12,11.56,35.65,21.14,26.32],[22,39.64,24.77,9.91,20,0,43.21],[38,41.23,49.55,8.25,1.48,18.32,1.88],[45,5.56,22.81,6.67,40,8.33,24.44],[47,0,29.73,18.16,4.45,4.23,36.63],[105,2.2,13.21,24.77,4.45,13.33,11.27],[169,0,22.25,0,4.45,0,26.3],[270,0,3.51,0,10,0,28.89],[338,0,-8.24,19.82,4.45,9.36,5.64],[362,17.62,6.61,0,5.94,0,7.52],[416,28.63,0,0,4.45,0,5.64],[537,0,3.3,4.95,1.48,2.82,3.75],[630,3.3,0,0,13.35,-5.63,1.88],[634,3.3,0,0,0,0,9.39],[644,33.03,0,-1.64,-2.96,-7.03,5.64],[651,0,0,0,5.94,-1.4,5.64],[655,7.71,4.95,-1.64,0,2.82,0],[680,17.62,0,0,0,0,0],[710,24.22,-1.64,-6.6,-4.44,-1.4,9.39],[781,8.81,0,0,0,0,0],[802,0,0,4.95,0,-1.4,0]],
+    "1400-1401": [[8,46.28,17.85,31.74,20.87,0,76.68],[9,12.66,60,0,36.6,6.66,30.3],[10,42.07,16.23,28.85,18.98,0,69.71],[12,36.06,75.73,52.28,0,0,0],[13,0,41.65,27.76,25.05,49.59,0],[19,0,37.86,25.24,22.77,45.08,0],[28,47.6,29.75,11.9,-4.17,-3.95,60.82],[39,43.27,27.05,10.82,-3.79,-3.59,55.29],[49,0,59.5,9.91,2.08,25.79,2.64],[64,0,54.09,9.01,1.89,23.44,2.4],[116,0,27.76,13.89,0,29.75,0],[124,2.64,15.86,29.75,6.26,0,15.86],[141,0,25.24,12.62,0,27.05,0],[150,2.4,14.42,27.05,5.69,0,14.42],[276,-1.31,0,0,6.26,0,37.02],[350,0,-3.33,23.8,6.26,0,7.94],[756,0,5,1.75,5.26,-1.66,0]],
+    "1400 (آزاد)": [[12,20,3.33,28.07,15.79,23.33,46.67],[26,52.22,66.67,8.77,0,18.33,0],[41,51.11,3.33,5.26,21.05,45,0],[143,0,20,3.51,0,36.67,0],[162,50,0,1.75,3.51,5,28.89],[206,11.11,-1.66,12.28,-8.76,40,2.22],[234,36.67,0,0,1.75,0,26.67],[266,-11.1,20,-12.28,1.75,13.33,20],[278,3.33,23.33,8.77,-3.5,5,0],[332,0,35,0,5.26,5,0],[378,42.22,-6.66,5.26,-1.74,0,11.11],[405,0,0,12.28,3.51,-1.66,8.89],[674,11.11,0,-1.74,0,0,11.11],[742,-6.66,-1.66,7.02,-3.5,-1.66,8.89],[764,22.22,3.33,-1.74,-3.5,-1.66,-6.66],[784,-4.43,5,8.77,1.75,0,-4.43],[787,0,0,0,-3.5,0,8.89],[795,2.22,8.33,0,0,0,0]],
+    "99": [[19,33.33,70,48.33,0,0,0],[20,38.89,15,26.67,17.54,0,64.44],[25,0,35,23.33,21.05,41.67,0],[73,40,25,10,-3.5,-3.32,51.11],[83,0,50,8.33,1.75,21.67,2.22],[144,2.22,13.33,25,5.26,0,13.33],[190,0,23.33,11.67,0,25,0],[206,-1.1,30,18.33,5.26,5,0],[300,-1.1,0,0,5.26,0,31.11],[449,-5.55,-8.32,20,5.26,-5,6.67],[477,17.78,6.67,0,7.02,0,8.89],[511,28.89,0,0,5.26,0,6.67],[657,0,3.33,5,1.75,3.33,4.44],[707,3.33,0,0,0,0,11.11],[835,33.33,0,-1.66,-3.5,-8.32,6.67],[865,3.33,0,-5,15.79,-6.66,2.22],[898,17.78,0,0,0,0,0],[916,-4.43,0,5,0,-1.66,0],[948,7.78,5,-1.66,0,3.33,0],[970,24.44,-1.66,-6.66,-5.25,-1.66,11.11],[981,6.67,-20,-26.66,8.77,6.67,2.22],[986,8.89,0,0,0,0,0],[1009,-3.32,-1.66,-1.66,7.02,-1.66,6.67]],
+    "98": [[76,3.33,31.58,20,35,5,-2.21],[134,0,7.02,-3.32,35,-6.66,28.89],[253,0,12.28,21.67,13.33,0,0],[274,32.22,0,10,6.67,5,4.44],[374,25.56,3.51,-3.32,0,0,22.22],[376,22.22,5.26,6.67,-1.66,13.33,0],[431,66.67,0,-1.66,0,1.67,-2.21],[447,0,24.56,1.67,0,11.67,-6.66],[478,-1.1,-1.74,23.33,0,0,0],[492,24.44,0,8.33,0,6.67,-2.21],[533,13.33,0,5,3.33,0,11.11],[575,0,7.02,-5,-3.32,0,20],[577,14.44,15.79,0,0,5,0],[632,25.56,0,5,-1.66,3.33,0],[648,4.44,0,-10,1.67,5,6.67],[726,24.44,-1.74,-11.66,10,0,4.44],[737,34.44,0,0,0,0,0],[764,0,0,8.33,6.67,3.33,-6.66],[810,36.67,0,0,0,0,0],[824,24.44,17.54,-6.66,1.67,-11.66,-6.66],[903,-2.21,-10.52,-13.32,0,6.67,11.11],[931,1.11,5.26,0,0,0,0],[1054,4.44,5.26,1.67,1.67,1.67,-11.1],[1123,4.44,-12.28,0,6.67,5,-4.43],[1129,-11.1,15.79,-8.32,-3.32,0,-11.1]],
+    "97": [[3,15.56,5.26,16.67,71.93,18.33,62.22],[98,0,0,31.67,15.79,13.33,8.89],[109,3.33,45.61,15,14.04,0,20],[111,10,0,18.33,12.28,10,26.67],[125,0,93.33,0,5.26,5,0],[138,31.11,35.09,20,-5.25,-1.66,13.33],[200,60,0,0,5.26,0,33.33],[285,62.22,-3.5,-11.66,0,-6.66,35.56],[403,7.78,8.77,16.67,10.53,1.67,0],[453,0,0,10,0,-3.32,28.89],[598,6.67,0,0,0,0,28.89],[668,0,5.26,21.67,-10.52,-1.66,6.67],[772,46.67,0,1.67,0,-1.66,0],[822,12.22,21.05,5,0,0,-13.32],[911,3.33,-3.5,3.33,-8.76,0,17.78],[1092,11.11,0,3.33,5.26,0,0],[1109,0,15.79,3.33,-3.5,0,0],[1360,6.67,0,0,0,0,0],[1381,12.22,0,-5,3.51,-3.32,-11.1]],
+    "96": [[31,15.56,10.53,38.33,25,16.67,33.33],[73,null,82.46,13.33,null,26.67,null],[172,8.89,null,18.33,13.33,null,46.67],[213,20,-19.29,35,1.67,6.67,28.89],[239,-2.21,36.84,26.67,-5,25,-24.43],[274,37.78,null,8.33,5,3.33,37.78],[335,null,21.05,11.67,null,28.33,null],[412,48.89,-1.74,3.33,6.67,null,28.89],[529,6.67,-1.74,38.33,-10,-5,-6.66],[546,-1.1,5.26,13.33,15,3.33,4.44],[691,15.56,null,13.33,5,null,8.89],[718,-1.1,14.04,13.33,-6.66,18.33,-2.21],[843,7.78,null,0,3.33,-1.66,31.11],[937,null,10.53,1.67,-1.66,23.33,-6.66],[1019,14.44,14.04,-5,-1.66,1.67,11.11],[1154,6.67,null,-8.32,20,-26.66,11.11],[1415,-6.66,7.02,13.33,null,null,null],[1738,6.67,-7.01,0,1.67,3.33,4.44],[2124,5.56,null,null,null,0,-11.1]],
+    "95": [[16,20,63.33,50,35,31.67,0],[33,26.67,65,45,18.33,33.33,0],[50,55.56,41.67,35,16.67,46.67,0],[64,6.67,73.33,25,25,31.67,0],[74,25.56,36.67,16.67,33.33,5,42.22],[107,0,73.33,26.67,23.33,18.33,0],[108,11,53,31,26,18,0],[122,0,55,15,18.33,40,0],[134,20.01,30,18.33,35,30,0],[158,18.89,45,26.67,10,31.67,0],[181,32.22,30,18.33,5,46.67,0],[223,0,51.67,10,23.33,28.33,0],[275,0,53.33,11.67,20,23.33,0],[337,0,46.67,21.67,0,28.33,-4.33],[395,11.11,11.11,15,35,0,22.22],[423,0,45,15,15,15,-4.43],[516,8.89,21.67,23.33,5,20,0],[681,0,15,6.67,13.33,13.33,20],[807,31.11,6.67,13.33,8.33,15,0],[907,0,0,18.33,23.33,21.67,-11.1]],
+    "94": [[1,2.2,53,61,51,57,48],[3,28,58,38,38,55,48],[8,12,68,43,31,42,44],[9,38,61,48,40,22,45],[18,40,69,49,35,9,35],[24,1.1,70,24.5,41.6,1.75,75.5],[33,28,50,28,26,24,64],[72,44,55,3,21,23,60],[78,43,60,36,16,3.5,37],[83,0,53,42,38,28,17],[85,-1,51,21,24,17,57],[89,0,65,22.8,15,54.3,13.3],[106,1.1,93.3,17.5,15,40.3,0],[111,59,72,14,5,46,0],[203,0,50,50,14,16,25],[287,-6.6,75,17,18,40,0],[295,4.4,70,15.7,5,40,-2.2],[327,55,0,42,6.6,8.7,35.5],[367,0,40,31,3,49,0],[398,1.1,75,7,13,29,0],[470,46,64,16,5,15,-2],[473,18.8,38.3,5.2,11.6,0,60],[521,0,50,8.7,26.6,0,35.5],[555,6,84,7,30,-3,0],[590,0,48,15,18,0,40],[606,0,41,7,15,15.7,28],[612,30,45,46,3.3,5,0],[621,-3.3,56,22,1.6,33,0],[667,7.7,55,19,0,21,0],[670,0,5,37,7,7,38],[789,27,44,20,16,14,2],[863,3.3,33,1.7,19,26,26],[900,-1.1,38.3,3.5,10,0,40],[957,-1.1,65,8.7,5,10.5,0],[995,27,53,5,11,1,0]]
+};
+
+const scYearSel = document.getElementById('scYear');
+Object.keys(scData).forEach(y => {
+    const opt = document.createElement('option');
+    opt.value = y; opt.innerText = 'کنکور ' + y;
+    scYearSel.appendChild(opt);
+});
+
+function fmtPct(v) {
+    if (v === null) return '<span class="blank-cell">سفید</span>';
+    if (v < 0) return `<span class="neg">${v}%</span>`;
+    if (v >= 35) return `<span class="high">${v}%</span>`;
+    return `${v}%`;
+}
+
+function renderScorecards() {
+    const yr = document.getElementById('scYear').value;
+    const minR = parseInt(document.getElementById('scMinR').value) || 0;
+    const maxR = parseInt(document.getElementById('scMaxR').value) || 99999;
+    const sortMode = document.getElementById('scSort').value;
+
+    let rows = [];
+    for (const [y, list] of Object.entries(scData)) {
+        if (yr !== 'all' && yr !== y) continue;
+        list.forEach(r => {
+            if (r[0] >= minR && r[0] <= maxR) {
+                const avg = ((r[1]||0) + 2*((r[2]||0)+(r[3]||0)+(r[4]||0)+(r[5]||0)+(r[6]||0))) / 11;
+                rows.push({ y, r: r[0], avg, l: r[1], m: r[2], a: r[3], f: r[4], s: r[5], d: r[6] });
+            }
+        });
+    }
+    if (sortMode === 'rank_asc') rows.sort((a,b) => a.r - b.r);
+
+    document.getElementById('scCount').innerText = `تعداد کارنامه یافت شده: ${rows.length}`;
+    document.getElementById('scBody').innerHTML = rows.map(row => `
+        <tr>
+            <td><strong>${row.y}</strong></td>
+            <td><span class="rank-pill">${row.r}</span></td>
+            <td><strong style="color:var(--secondary)">${row.avg.toFixed(2)}%</strong></td>
+            <td>${fmtPct(row.l)}</td><td>${fmtPct(row.m)}</td><td>${fmtPct(row.a)}</td>
+            <td>${fmtPct(row.f)}</td><td>${fmtPct(row.s)}</td><td>${fmtPct(row.d)}</td>
+        </tr>
+    `).join('');
+}
+
+// ==================== TAB 3: ADMISSIONS DATA (200 RECORDS) ====================
+const U = ["صنعتی شریف","صنعتی امیرکبیر","دانشگاه تهران","خواجه نصیرالدین طوسی","شهید بهشتی","تربیت مدرس","علم و صنعت","دانشگاه اصفهان","دانشگاه شیراز","فردوسی مشهد","پژوهشگاه هوافضا","مالک اشتر تهران","مالک اشتر شاهین‌شهر","سهند تبریز","دانشگاه تبریز","صنعتی سمنان","صنعتی شاهرود","شهید ستاری","امام حسین","آزاد علوم و تحقیقات"];
+const M = ["دینامیک پرواز و کنترل","پیشرانش (جلوبرندگی)","آیرودینامیک","سازه‌های هوایی","مهندسی فضایی","فناوری ماهواره","صلاحیت‌های پروازی"];
+const T = ["روزانه","شبانه / نوبت دوم","پردیس خودگردان","مجازی","آزاد"];
+
+const admData = [
+    ["1404",19,0,1,0],["1404",24,0,1,0],["1404",29,0,1,0],["1404",44,3,0,0],["1404",46,1,0,0],["1404",49,3,0,0],["1404",56,2,0,0],["1404",59,2,1,0],["1404",71,1,4,0],["1404",73,0,3,0],["1404",74,1,1,0],["1404",82,2,1,0],["1404",85,2,1,0],["1404",86,1,1,0],["1404",92,1,1,0],["1404",96,3,4,0],["1404",99,1,2,0],["1404",100,5,1,0],["1404",101,1,2,0],["1404",102,3,2,0],["1404",120,0,3,0],["1404",121,0,3,0],["1404",126,4,3,0],["1404",127,1,6,0],["1404",133,3,2,0],["1404",144,1,3,0],["1404",145,3,4,0],["1404",147,1,3,0],["1404",153,3,3,0],["1404",155,3,3,0],["1404",157,2,2,1],["1404",164,1,4,0],["1404",173,2,5,0],["1404",179,4,3,0],["1404",194,1,4,0],["1404",195,3,4,0],["1404",213,1,4,0],["1404",218,0,3,1],["1404",224,2,3,0],["1404",248,3,6,0],["1404",260,1,5,0],["1404",272,1,11,0],["1404",282,1,3,1],["1404",302,3,4,0],["1404",320,4,3,1],["1404",325,3,4,0],["1404",334,2,3,1],["1404",415,3,14,0],["1404",500,2,11,0],["1404",41,0,0,0,"رتبه ۳ سهمیه ۵٪ ایثارگر"],
+    ["1403",33,3,0,0],["1403",95,2,0,0],["1403",117,1,5,0],["1403",226,1,4,1],["1403",287,0,7,0,"بورس بهیار صنعت سپاهان"],["1403",355,0,7,0],["1403",462,0,7,1],["1403",539,4,11,0],["1403",608,2,1,2],["1403",689,6,17,0],["1403",711,3,13,0],["1403",727,3,4,2],["1403",740,2,8,2],
+    ["1402",35,0,0,0],["1402",61,1,1,0],["1402",209,2,5,0],["1402",209,2,19,4],["1402",283,2,5,0],["1402",359,0,7,0],["1402",462,2,8,0],["1402",523,2,9,1],["1402",635,2,8,2],["1402",708,3,13,0],["1402",837,1,11,1],["1402",859,1,15,0],["1402",897,3,5,3],["1402",1007,3,12,1],
+    ["1401",6,0,0,0],["1401",36,1,0,0],["1401",75,0,1,0],["1401",90,4,1,0],["1401",125,0,2,0],["1401",132,3,1,0],["1401",220,3,6,0],["1401",257,1,3,0],["1401",269,3,3,0],["1401",273,2,1,0],["1401",281,0,2,1],["1401",298,2,5,0],["1401",418,3,1,2],["1401",511,0,7,1],["1401",544,3,11,0],["1401",565,3,13,0],["1401",756,1,5,3],["1401",1214,0,5,2],
+    ["1400",14,1,0,0],["1400",22,1,0,0],["1400",23,0,0,0],["1400",29,1,0,0],["1400",84,3,1,0],["1400",95,4,1,0],["1400",109,2,1,0],["1400",168,1,3,0],["1400",191,2,2,1],["1400",240,5,2,0],["1400",240,2,1,1],["1400",273,0,4,1],["1400",323,3,6,0],["1400",352,0,3,1],["1400",383,1,3,1],["1400",442,2,5,1],["1400",478,2,5,1],["1400",527,3,13,0],["1400",558,0,3,1],["1400",593,2,12,0],["1400",759,0,1,2],["1400",786,5,1,2],["1400",866,2,16,0],["1400",913,2,18,0],["1400",1045,1,4,2],["1400",1138,3,16,1],["1400",1726,3,6,0,"سهمیه خاص"],["1400",3321,0,4,1,"سهمیه خاص"],
+    ["98",67,4,0,0],["98",84,0,1,0],["98",135,2,1,0],["98",152,2,2,0],["98",216,1,4,0],["98",248,0,4,0],["98",330,3,3,0],["98",357,3,5,0],["98",381,4,10,0],["98",467,2,8,0],["98",492,4,3,1],["98",568,2,9,1],["98",788,3,14,1],
+    ["97",110,0,1,0],["97",175,1,2,0],["97",234,2,2,0],["97",291,0,1,1],["97",353,3,5,0],["97",429,3,2,1],["97",509,0,14,2],["97",563,0,2,1],["97",626,3,3,1],["97",722,6,17,1],["97",854,1,15,0],["97",950,3,15,1],["97",1140,1,5,2],
+    ["96",43,1,0,0],["96",246,1,6,0],["96",285,1,3,0],["96",290,2,6,0],["96",306,2,3,0],["96",348,0,1,1],["96",589,2,11,0],["96",694,1,9,1],["96",718,2,9,1],["96",986,1,1,2],["96",994,3,16,1],["96",1019,2,1,2],["96",1093,3,11,1],
+    ["آرشیو",8,3,2,0],["آرشیو",9,0,1,0],["آرشیو",16,1,0,0],["آرشیو",18,3,0,0],["آرشیو",31,2,0,0],["آرشیو",33,3,9,0],["آرشیو",34,1,1,0],["آرشیو",36,0,1,0],["آرشیو",47,2,1,0],["آرشیو",59,3,6,0],["آرشیو",64,3,0,0],["آرشیو",68,0,3,0],["آرشیو",93,2,3,0],["آرشیو",97,0,3,0],["آرشیو",99,4,3,0],["آرشیو",102,1,2,0],["آرشیو",110,3,2,0],["آرشیو",111,0,3,0],["آرشیو",121,4,1,0],["آرشیو",133,1,5,0],["آرشیو",135,4,3,0],["آرشیو",140,2,9,0],["آرشیو",164,4,2,0],["آرشیو",167,3,2,1],["آرشیو",185,1,4,1],["آرشیو",188,4,3,0],["آرشیو",189,2,3,0],["آرشیو",199,4,10,0],["آرشیو",209,4,3,0],["آرشیو",212,1,4,0],["آرشیو",217,0,3,1],["آرشیو",218,3,6,0],["آرشیو",223,2,3,0],["آرشیو",267,1,9,0],["آرشیو",390,3,11,0],["آرشیو",425,4,1,2],["آرشیو",100,0,1,0,"رتبه ۱۴ سهمیه"],["آرشیو",559,0,1,2,"رتبه ۶۳ سهمیه"]
+];
+
+function initAdmFilters() {
+    const uSel = document.getElementById('admUni');
+    U.forEach((u, i) => uSel.innerHTML += `<option value="${i}">${u}</option>`);
+    const mSel = document.getElementById('admMajor');
+    M.forEach((m, i) => mSel.innerHTML += `<option value="${i}">${m}</option>`);
+    const tSel = document.getElementById('admType');
+    T.forEach((t, i) => tSel.innerHTML += `<option value="${i}">${t}</option>`);
+    const ySel = document.getElementById('admYear');
+    ["1404","1403","1402","1401","1400","98","97","96","آرشیو"].forEach(y => ySel.innerHTML += `<option value="${y}">${y}</option>`);
+}
+
+function renderAdmissions() {
+    const uF = document.getElementById('admUni').value;
+    const mF = document.getElementById('admMajor').value;
+    const tF = document.getElementById('admType').value;
+    const yF = document.getElementById('admYear').value;
+    const minR = parseInt(document.getElementById('admMinR').value) || 0;
+    const maxR = parseInt(document.getElementById('admMaxR').value) || 99999;
+
+    const filtered = admData.filter(d => 
+        (uF === 'all' || d[3] == uF) &&
+        (mF === 'all' || d[2] == mF) &&
+        (tF === 'all' || d[4] == tF) &&
+        (yF === 'all' || d[0] === yF) &&
+        (d[1] >= minR && d[1] <= maxR)
+    ).sort((a, b) => a[1] - b[1]);
+
+    document.getElementById('admCount').innerText = `نمایش ${filtered.length} مورد قبولی از مجموع ${admData.length} رکورد`;
+    document.getElementById('admBody').innerHTML = filtered.map(d => {
+        const badgeCls = d[4] === 0 ? 'b-day' : (d[4] === 1 ? 'b-night' : 'b-other');
+        return `
+            <tr>
+                <td><span class="rank-pill">${d[1]}</span></td>
+                <td><strong>${M[d[2]]}</strong></td>
+                <td>${U[d[3]]}</td>
+                <td><span class="badge ${badgeCls}">${T[d[4]]}</span></td>
+                <td>${d[0]}</td>
+                <td style="font-size:0.76rem; color:#64748b;">${d[5] ? d[5] : '-'}</td>
+            </tr>
+        `;
+    }).join('');
+}
+
+// Init
+renderScorecards();
+initAdmFilters();
+renderAdmissions();
+</script>
+
+</body>
+</html>
